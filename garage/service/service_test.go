@@ -82,7 +82,81 @@ func TestGarageService_FindAll(t *testing.T) {
 func TestGarageService_Update(t *testing.T) {
 	mockGarageRepo := new(mocks.GarageRepository)
 	mockGarage := &domain.Garage{
-		ID:        mock.Anything,
+		ID:        1,
+		Owner:     "test",
+		Address:   "california street",
+		Mobile:    "08121348584",
+		UpdatedAt: time.Now(),
+		CreatedAt: time.Now(),
+	}
+	mockEmptyGarage := &domain.Garage{}
+
+	t.Run("success", func(t *testing.T) {
+		mockGarageRepo.On("FindByID", mock.Anything).Return(mockGarage, nil).Once()
+		mockGarageRepo.On("Update", mock.Anything).Return(true, nil).Once()
+		service := _garageService.NewService(mockGarageRepo)
+		isUpdated, err := service.Update(1, mockGarage)
+
+		assert.NoError(t, err)
+		assert.Equal(t, isUpdated, true)
+		assert.NotNil(t, isUpdated)
+
+		mockGarageRepo.AssertExpectations(t)
+	})
+	t.Run("error-failed", func(t *testing.T) {
+		mockGarageRepo.On("FindByID", mock.Anything).Return(mockGarage, nil).Once()
+		mockGarageRepo.On("Update", mock.Anything).Return(false, errors.New("unexpected")).Once()
+
+		service := _garageService.NewService(mockGarageRepo)
+		isUpdated, err := service.Update(1, mockEmptyGarage)
+		assert.Error(t, err)
+		assert.Equal(t, isUpdated, false)
+
+		mockGarageRepo.AssertExpectations(t)
+	})
+
+}
+
+func TestGarageService_FindByID(t *testing.T) {
+	mockGarageRepo := new(mocks.GarageRepository)
+	mockGarage := &domain.Garage{
+		ID:        1,
+		Owner:     "test",
+		Address:   "california street",
+		Mobile:    "08121348584",
+		UpdatedAt: time.Now(),
+		CreatedAt: time.Now(),
+	}
+	mockEmptyGarage := &domain.Garage{}
+
+	t.Run("success", func(t *testing.T) {
+		mockGarageRepo.On("FindByID", mock.Anything).Return(mockGarage, nil).Once()
+		service := _garageService.NewService(mockGarageRepo)
+		garage, err := service.FindByID(1)
+
+		assert.NoError(t, err)
+		assert.Equal(t, mockGarage, garage)
+		assert.NotNil(t, garage)
+
+		mockGarageRepo.AssertExpectations(t)
+	})
+	t.Run("error-failed", func(t *testing.T) {
+		mockGarageRepo.On("FindByID", mock.Anything).Return(mockEmptyGarage, errors.New("unexpected")).Once()
+
+		service := _garageService.NewService(mockGarageRepo)
+		garage, err := service.FindByID(1)
+		assert.Error(t, err)
+		assert.Equal(t, garage, mockEmptyGarage)
+
+		mockGarageRepo.AssertExpectations(t)
+	})
+
+}
+
+func TestGarageService_Delete(t *testing.T) {
+	mockGarageRepo := new(mocks.GarageRepository)
+	mockGarage := &domain.Garage{
+		ID:        1,
 		Owner:     "test",
 		Address:   "california street",
 		Mobile:    "08121348584",
@@ -90,29 +164,28 @@ func TestGarageService_Update(t *testing.T) {
 		CreatedAt: time.Now(),
 	}
 	// mockEmptyGarage := &domain.Garage{}
-	garageID := mock.Anything
 
 	t.Run("success", func(t *testing.T) {
-		mockGarageRepo.On("Update", mock.Anything).Return(mockGarage, nil).Once()
+		mockGarageRepo.On("FindByID", mock.Anything).Return(mockGarage, nil).Once()
+		mockGarageRepo.On("Delete", mock.Anything).Return(true, nil).Once()
 		service := _garageService.NewService(mockGarageRepo)
-		updatedGarage, err := service.Update(garageID, mockGarage)
+		isDeleted, err := service.Delete(1)
 
 		assert.NoError(t, err)
-		assert.NotNil(t, updatedGarage)
+		assert.Equal(t, isDeleted, true)
+		assert.NotNil(t, isDeleted)
 
 		mockGarageRepo.AssertExpectations(t)
 	})
-	// t.Run("error-failed", func(t *testing.T) {
-	// 	mockCatRepo.On("UpdateOne", mock.Anything, mock.Anything).Return(mockEmptyCat, errors.New("Unexpected")).Once()
+	t.Run("error-failed", func(t *testing.T) {
+		mockGarageRepo.On("FindByID", mock.Anything).Return(mockGarage, nil).Once()
+		mockGarageRepo.On("Delete", mock.Anything).Return(false, errors.New("unexpected")).Once()
+		service := _garageService.NewService(mockGarageRepo)
+		isDeleted, err := service.Delete(1)
+		assert.Error(t, err)
+		assert.Equal(t, isDeleted, false)
 
-	// 	u := ucase.NewCatUsecase(mockCatRepo, time.Second*2)
-
-	// 	a, err := u.UpdateOne(context.TODO(), mockCat, CatID)
-
-	// 	assert.Error(t, err)
-	// 	assert.Equal(t, mockEmptyCat, a)
-
-	// 	mockCatRepo.AssertExpectations(t)
-	// })
+		mockGarageRepo.AssertExpectations(t)
+	})
 
 }
