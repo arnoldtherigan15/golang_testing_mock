@@ -22,9 +22,6 @@ func NewHandler(e *echo.Group, service domain.OrderService) {
 	g.POST("", handler.Create)
 	g.POST("/done", handler.Done)
 	g.GET("", handler.FindAll)
-	// g.GET("/:id", handler.FindByID)
-	// g.PUT("/:id", handler.Update)
-	// g.DELETE("/:id", handler.Delete)
 }
 
 func isRequestValid(order *input.Order) (bool, error) {
