@@ -29,14 +29,10 @@ type OrderRepository interface {
 	Done(order *Order) (bool, error)
 	FindByID(ID int) (*Order, error)
 	FindAll(pagination helpers.Pagination) (*helpers.Pagination, error)
-	// Delete(order *Order) (bool, error)
 }
 
 type OrderService interface {
 	Create(order *input.Order) (*formatter.Formatter, error)
 	Done(ID *input.DoneInput) (*formatter.DoneFormatter, error)
 	FindAll(pagination helpers.Pagination) (*helpers.Pagination, error)
-	// FindByID(ID int) (*Order, error)
-	// FindAll() (*[]Order, error)
-	// Delete(ID int) (bool, error)
 }

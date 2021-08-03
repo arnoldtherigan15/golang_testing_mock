@@ -93,7 +93,7 @@ func TestGarageService_Update(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		mockGarageRepo.On("FindByID", mock.Anything).Return(mockGarage, nil).Once()
-		mockGarageRepo.On("Update", mock.Anything).Return(true, nil).Once()
+		mockGarageRepo.On("Update", mock.Anything, mock.Anything).Return(true, nil).Once()
 		service := _garageService.NewService(mockGarageRepo)
 		isUpdated, err := service.Update(1, mockGarage)
 

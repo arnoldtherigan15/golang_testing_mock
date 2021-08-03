@@ -106,13 +106,13 @@ func (s *service) Login(input input.LoginInput) (*formatter.LoginResponse, error
 		return &formatter.LoginResponse{}, err
 	}
 	if user.ID == 0 {
-		return &formatter.LoginResponse{}, errors.New("invalid email or password")
+		return &formatter.LoginResponse{}, errors.New("invalid email or password 109")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil {
-		return &formatter.LoginResponse{}, errors.New("invalid email or password")
+		return &formatter.LoginResponse{}, errors.New("invalid email or password 115")
 	}
 
 	access_token, err := s.authService.GenerateToken(user)
